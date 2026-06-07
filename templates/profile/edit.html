@@ -3,113 +3,380 @@
 {% block title %}Edit Profile - ShopNest{% endblock %}
 
 {% block content %}
+
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-person-circle"></i>
-                        Edit Profile
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <!-- Profile Avatar -->
-                        <div class="row mb-4 align-items-center">
-                            <div class="col-md-3 text-center">
-                                {% if user.avatar %}
-                                    <img src="{{ user.avatar.url }}" alt="Profile" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                                {% else %}
-                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; margin: 0 auto;">
-                                        <i class="bi bi-person" style="font-size: 50px; color: #ccc;"></i>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-9">
-                                <label for="{{ form.avatar.id_for_label }}" class="form-label">Profile Picture</label>
-                                {{ form.avatar }}
-                                <small class="form-text text-muted d-block mt-2">
-                                    Upload a profile picture (JPG, PNG). Max size: 5MB
-                                </small>
-                            </div>
+
+```
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-circle"></i>
+                    Edit Profile
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Avatar -->
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-3 text-center">
+
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}"
+                                     alt="Profile"
+                                     class="img-fluid rounded-circle"
+                                     style="width:150px;height:150px;object-fit:cover;">
+                            {% else %}
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                     style="width:150px;height:150px;">
+                                    <i class="bi bi-person"
+                                       style="font-size:50px;color:#ccc;"></i>
+                                </div>
+                            {% endif %}
+
                         </div>
 
-                        <!-- Personal Information -->
-                        <h6 class="mb-3 border-bottom pb-2">
-                            <i class="bi bi-info-circle"></i> Personal Information
-                        </h6>
+                        <div class="col-md-9">
+                            <label for="{{ form.avatar.id_for_label }}"
+                                   class="form-label">
+                                Profile Picture
+                            </label>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
-                                {{ form.first_name }}
-                                {% if form.first_name.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
-                                {{ form.last_name }}
-                                {% if form.last_name.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.last_name.errors }}</div>
-                                {% endif %}
-                            </div>
+                            {{ form.avatar }}
+
+                            <small class="form-text text-muted d-block mt-2">
+                                Upload JPG or PNG image.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <h6 class="mb-3 border-bottom pb-2">
+                        <i class="bi bi-person"></i>
+                        Personal Information
+                    </h6>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                First Name
+                            </label>
+
+                            {{ form.first_name }}
+
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
                         </div>
 
-                        <!-- Contact Information -->
-                        <h6 class="mb-3 border-bottom pb-2">
-                            <i class="bi bi-telephone"></i> Contact Information
-                        </h6>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Last Name
+                            </label>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
-                                {{ form.phone }}
-                                {% if form.phone.errors %}
-                                    <div class="invalid-feedback d-block">{{ form.phone.errors }}</div>
-                                {% endif %}
-                            </div>
+                            {{ form.last_name }}
+
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
                         </div>
 
-                        <!-- Form Actions -->
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-lg"></i> Save Changes
-                            </button>
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-lg"></i> Cancel
-                            </a>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <h6 class="mb-3 border-bottom pb-2">
+                        <i class="bi bi-envelope"></i>
+                        Contact Information
+                    </h6>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Email Address
+                            </label>
+
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
                         </div>
-                    </form>
-                </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Phone Number
+                            </label>
+
+                            {{ form.phone }}
+
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <!-- Location Information -->
+                    <h6 class="mb-3 border-bottom pb-2">
+                        <i class="bi bi-geo-alt"></i>
+                        Location Information
+                    </h6>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">
+                                Pincode
+                            </label>
+
+                            {{ form.pincode }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">
+                                City
+                            </label>
+
+                            {{ form.city }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">
+                                Village
+                            </label>
+
+                            {{ form.village }}
+                        </div>
+
+                    </div>
+
+                    <!-- Delivery Agent Section -->
+                    {% if user.role == 'delivery_agent' %}
+                    <h6 class="mb-3 border-bottom pb-2">
+                        <i class="bi bi-truck"></i>
+                        Vehicle Information
+                    </h6>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Vehicle Type
+                            </label>
+
+                            <select name="vehicle_type"
+                                    class="form-select">
+
+                                <option value="bike"
+                                    {% if delivery_agent.vehicle_type == 'bike' %}
+                                        selected
+                                    {% endif %}>
+                                    Bike
+                                </option>
+
+                                <option value="scooter"
+                                    {% if delivery_agent.vehicle_type == 'scooter' %}
+                                        selected
+                                    {% endif %}>
+                                    Scooter
+                                </option>
+
+                                <option value="car"
+                                    {% if delivery_agent.vehicle_type == 'car' %}
+                                        selected
+                                    {% endif %}>
+                                    Car
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Vehicle Number
+                            </label>
+
+                            <input type="text"
+                                   name="vehicle_number"
+                                   class="form-control"
+                                   value="{{ delivery_agent.vehicle_number }}"
+                                   placeholder="KL 07 AB 1234">
+                        </div>
+
+                    </div>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="mt-4">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i>
+                            Save Changes
+                        </button>
+
+                        <a href="{% url 'profile' %}"
+                           class="btn btn-secondary">
+                            <i class="bi bi-x-lg"></i>
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
             </div>
         </div>
+
     </div>
+</div>
+```
+
 </div>
 
 <style>
-    .form-control, .form-select {
-        border-radius: 0.375rem;
-    }
-    
-    .form-control:focus, .form-select:focus {
-        border-color: #ff6b35;
-        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
-    }
-    
-    .invalid-feedback {
-        color: #dc3545;
-        font-size: 0.875rem;
-    }
+.form-control,
+.form-select {
+    border-radius: 0.375rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 0.2rem rgba(255,107,53,0.25);
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+}
 </style>
+
 {% endblock %}
+
+
+{% if user.role == 'delivery_agent' %}
+
+<h6 class="mb-3 border-bottom pb-2">
+    <i class="bi bi-truck"></i>
+    Delivery Agent Settings
+</h6>
+
+<div class="row mb-3">
+
+    <div class="col-md-6">
+        <label class="form-label">Vehicle Type</label>
+
+        <select name="vehicle_type" class="form-select">
+
+            <option value="bike"
+                {% if delivery_agent.vehicle_type == 'bike' %}selected{% endif %}>
+                Bike
+            </option>
+
+            <option value="scooter"
+                {% if delivery_agent.vehicle_type == 'scooter' %}selected{% endif %}>
+                Scooter
+            </option>
+
+            <option value="car"
+                {% if delivery_agent.vehicle_type == 'car' %}selected{% endif %}>
+                Car
+            </option>
+
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Vehicle Number</label>
+
+        <input
+            type="text"
+            name="vehicle_number"
+            class="form-control"
+            value="{{ delivery_agent.vehicle_number }}"
+            placeholder="KL 07 AB 1234">
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-12">
+
+        <div class="card border-success">
+            <div class="card-body">
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="is_active"
+                        name="is_active"
+                        {% if delivery_agent.is_active %}checked{% endif %}>
+
+                    <label class="form-check-label fw-bold"
+                           for="is_active">
+
+                        {% if delivery_agent.is_active %}
+                            Available for Deliveries
+                        {% else %}
+                            Not Accepting Deliveries
+                        {% endif %}
+
+                    </label>
+
+                </div>
+
+                <small class="text-muted">
+                    Enable this option when you're ready to receive delivery orders.
+                    Disable it when you're unavailable.
+                </small>
+
+                <hr>
+
+                <p class="mb-0">
+                    Current Status:
+
+                    {% if delivery_agent.status == 'available' %}
+                        <span class="badge bg-success">
+                            Available
+                        </span>
+
+                    {% elif delivery_agent.status == 'busy' %}
+                        <span class="badge bg-warning text-dark">
+                            Busy
+                        </span>
+
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            Offline
+                        </span>
+                    {% endif %}
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}

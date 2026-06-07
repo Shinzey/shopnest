@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Delivery Agent Registration{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <h3>Delivery Agent Registration</h3>
+                </div>
+
+                <div class="card-body">
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.first_name.label }}
+                            </label>
+                            {{ form.first_name }}
+                            {{ form.first_name.errors }}
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.last_name.label }}
+                            </label>
+                            {{ form.last_name }}
+                            {{ form.last_name.errors }}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.email.label }}
+                            </label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.phone.label }}
+                            </label>
+                            {{ form.phone }}
+                            {{ form.phone.errors }}
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-3">Service Area</h5>
+
+                        <!-- Pincode -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.pincode.label }}
+                            </label>
+                            {{ form.pincode }}
+                            {{ form.pincode.errors }}
+                        </div>
+
+                        <!-- City -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.city.label }}
+                            </label>
+                            {{ form.city }}
+                            {{ form.city.errors }}
+                        </div>
+
+                        <!-- Village -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.village.label }}
+                            </label>
+                            {{ form.village }}
+                            {{ form.village.errors }}
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-3">Vehicle Details</h5>
+
+                        <!-- Vehicle Type -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.vehicle_type.label }}
+                            </label>
+                            {{ form.vehicle_type }}
+                            {{ form.vehicle_type.errors }}
+                        </div>
+
+                        <!-- Vehicle Number -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.vehicle_number.label }}
+                            </label>
+                            {{ form.vehicle_number }}
+                            {{ form.vehicle_number.errors }}
+                        </div>
+
+                        <hr>
+
+                        <h5 class="mb-3">Account Security</h5>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.password1.label }}
+                            </label>
+                            {{ form.password1 }}
+                            {{ form.password1.errors }}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ form.password2.label }}
+                            </label>
+                            {{ form.password2 }}
+                            {{ form.password2.errors }}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                Register as Delivery Agent
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p>
+                            Already have an account?
+                            <a href="{% url 'login' %}">Login</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

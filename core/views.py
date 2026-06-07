@@ -80,18 +80,36 @@ def register_shop_owner(request):
 
 
 def register_delivery_agent(request):
-    """Delivery agent registration."""
     if request.method == 'POST':
         form = DeliveryAgentRegistrationForm(request.POST)
+
         if form.is_valid():
             user = form.save()
+
             Preference.objects.create(user=user)
-            messages.success(request, 'Delivery agent registration successful! Please log in.')
+
+            DeliveryAgent.objects.create(
+                user=user,
+                vehicle_type=form.cleaned_data['vehicle_type'],
+                vehicle_number=form.cleaned_data['vehicle_number'],
+                status='offline'
+            )
+
+            messages.success(
+                request,
+                'Delivery agent registration successful! Please log in.'
+            )
+
             return redirect('login')
+
     else:
         form = DeliveryAgentRegistrationForm()
-    
-    return render(request, 'auth/register.html', {'form': form, 'role': 'Delivery Agent'})
+
+    return render(
+        request,
+        'auth/delivery_register.html',
+        {'form': form, 'role': 'Delivery Agent'}
+    )
 
 
 def login_view(request):
@@ -242,25 +260,37 @@ def shop_detail(request, shop_id):
 
 @login_required
 def products_list(request):
-    """Display all products with filtering."""
     products = Product.objects.filter(is_available=True)
+
+    if request.user.pincode:
+        products = products.filter(
+            shop__pincode=request.user.pincode
+        )
+
     category = request.GET.get('category')
     shop_id = request.GET.get('shop')
     search = request.GET.get('q')
-    
+
     if category:
         products = products.filter(category=category)
-    
+
     if shop_id:
         products = products.filter(shop_id=shop_id)
-    
+
     if search:
-        products = products.filter(Q(name__icontains=search) | Q(description__icontains=search))
-    
+        products = products.filter(
+            Q(name__icontains=search) |
+            Q(description__icontains=search)
+        )
+
     context = {
         'products': products,
-        'categories': Product.objects.values_list('category', flat=True).distinct(),
+        'categories': products.values_list(
+            'category',
+            flat=True
+        ).distinct(),
     }
+
     return render(request, 'products/list.html', context)
 
 
@@ -655,30 +685,93 @@ def add_shop_review(request, shop_id):
 
 @login_required
 def profile(request):
-    """Display user profile."""
+
+    if request.user.role == 'delivery_agent':
+        delivery_agent = DeliveryAgent.objects.get(user=request.user)
+
+        if request.method == 'POST':
+            delivery_agent.is_active = not delivery_agent.is_active
+
+            if delivery_agent.is_active:
+                delivery_agent.status = 'available'
+            else:
+                delivery_agent.status = 'offline'
+
+            delivery_agent.save()
+
+            return redirect('profile')
+
+        addresses = request.user.addresses.all()
+
+        return render(request, 'profile/delivery_profile.html', {
+            'delivery_agent': delivery_agent,
+            'addresses': addresses,
+        })
+
     addresses = request.user.addresses.all()
     recent_orders = request.user.orders.all()[:5]
-    
-    context = {
+
+    return render(request, 'profile/index.html', {
         'addresses': addresses,
         'recent_orders': recent_orders,
-    }
-    return render(request, 'profile/index.html', context)
+    })
 
 
 @login_required
 def edit_profile(request):
-    """Edit user profile."""
+    delivery_agent = None
+
+    if request.user.role == 'delivery_agent':
+        delivery_agent = request.user.delivery_agent
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        form = ProfileForm(
+            request.POST,
+            request.FILES,
+            instance=request.user
+        )
+
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated successfully!')
+
+            if delivery_agent:
+                delivery_agent.vehicle_type = request.POST.get(
+                    'vehicle_type',
+                    delivery_agent.vehicle_type
+                )
+
+                delivery_agent.vehicle_number = request.POST.get(
+                    'vehicle_number',
+                    delivery_agent.vehicle_number
+                )
+
+                # delivery_agent.is_active = 'is_active' in request.POST
+
+                # if delivery_agent.is_active:
+                #     delivery_agent.status = 'available'
+                # else:
+                #     delivery_agent.status = 'offline'
+
+                delivery_agent.save()
+
+            messages.success(
+                request,
+                'Profile updated successfully!'
+            )
+
             return redirect('profile')
+
     else:
         form = ProfileForm(instance=request.user)
-    
-    return render(request, 'profile/edit.html', {'form': form})
+
+    return render(
+        request,
+        'profile/edit.html',
+        {
+            'form': form,
+            'delivery_agent': delivery_agent
+        }
+    )
 
 
 @login_required
@@ -859,25 +952,33 @@ def assign_delivery_agent(request, order_id):
 
 
 # ==================== Delivery Agent Views ====================
-
 @login_required
 def delivery_agent_accept_order(request, order_id):
-    """Delivery agent accepts order assignment."""
     try:
         delivery_agent = request.user.delivery_agent
     except:
         messages.error(request, 'You do not have a delivery agent profile.')
         return redirect('profile')
-    
-    order = get_object_or_404(Order, id=order_id, delivery_agent=delivery_agent)
-    
-    if request.method == 'POST' and order.status == 'out_for_delivery':
-        # Update delivery agent status
+
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        delivery_agent=delivery_agent
+    )
+
+    if (
+        request.method == 'POST'
+        and order.status == 'out_for_delivery'
+        and not order.delivery_accepted
+    ):
+
+        order.delivery_accepted = True
+        order.save()
+
         delivery_agent.status = 'busy'
         delivery_agent.current_orders += 1
         delivery_agent.save()
-        
-        # Create notification for customer
+
         Notification.objects.create(
             user=order.user,
             notification_type='order_update',
@@ -885,11 +986,12 @@ def delivery_agent_accept_order(request, order_id):
             message=f'Delivery agent {delivery_agent.user.get_full_name()} is on the way to deliver your order #{order.id}.',
             related_order=order,
         )
-        
-        messages.success(request, 'Order delivery accepted! You are on the way.')
-        return redirect('home')
-    
-    messages.warning(request, 'Invalid order status.')
+
+        messages.success(
+            request,
+            'Order delivery accepted! You are on the way.'
+        )
+
     return redirect('home')
 
 

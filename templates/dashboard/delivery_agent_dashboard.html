@@ -1,215 +1,697 @@
 {% extends 'base.html' %}
 
-{% block title %}Delivery Agent Dashboard - ShopNest{% endblock %}
+{% block title %}Delivery Dashboard – ShopNest{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>
-                <i class="bi bi-truck"></i>
-                Delivery Dashboard
-            </h2>
-            <p class="text-muted">
-                👤 {{ delivery_agent.user.get_full_name }}
-            </p>
-        </div>
-        <div class="col-md-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h6 class="card-title">Status</h6>
-                            <p class="mb-0">
-                                <span class="badge bg-{% if delivery_agent.status == 'available' %}success{% elif delivery_agent.status == 'busy' %}warning{% else %}danger{% endif %}">
-                                    {{ delivery_agent.get_status_display }}
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h6 class="card-title">Rating</h6>
-                            <p class="mb-0">
-                                <span class="badge bg-info">⭐ {{ delivery_agent.rating|floatformat:1 }}/5.0</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --brand: #0f4c81;
+    --brand-light: #e8f1fb;
+    --brand-accent: #1a73e8;
+    --success: #0f6e56;
+    --success-light: #e1f5ee;
+    --warning: #854f0b;
+    --warning-light: #faeeda;
+    --danger: #a32d2d;
+    --danger-light: #fcebeb;
+    --surface: #ffffff;
+    --surface-2: #f7f8fc;
+    --surface-3: #eef1f7;
+    --text-primary: #14142b;
+    --text-muted: #6b7280;
+    --border: rgba(0,0,0,0.08);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.1);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--surface-2);
+    color: var(--text-primary);
+  }
+
+  /* ── Header banner ──────────────────────────── */
+  .da-header {
+    background: var(--brand);
+    background-image: linear-gradient(135deg, #0f4c81 0%, #185fa5 60%, #1a73e8 100%);
+    padding: 2.5rem 2rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .da-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.07) 0%, transparent 50%),
+                      radial-gradient(circle at 10% 90%, rgba(255,255,255,0.05) 0%, transparent 40%);
+  }
+  .da-header-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .da-greeting {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+  .da-name {
+    font-family: var(--font-display);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    line-height: 1.1;
+  }
+  .da-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .da-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+  }
+  .badge-status-available { background: rgba(31,209,122,0.18); color: #7fffc4; border: 1px solid rgba(127,255,196,0.25); }
+  .badge-status-busy      { background: rgba(250,199,117,0.18); color: #fac775; border: 1px solid rgba(250,199,117,0.25); }
+  .badge-status-offline   { background: rgba(240,149,149,0.18); color: #f09595; border: 1px solid rgba(240,149,149,0.25); }
+  .da-badge-rating { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.18); }
+
+  /* profile button */
+  .btn-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.22);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .btn-profile:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+  /* ── Stat cards ─────────────────────────────── */
+  .stats-row {
+    max-width: 960px;
+    margin: -32px auto 0;
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    position: relative;
+    z-index: 5;
+  }
+  .stat-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 0.5px solid var(--border);
+  }
+  .stat-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .stat-icon.blue  { background: #e8f1fb; color: #185fa5; }
+  .stat-icon.green { background: #e1f5ee; color: #0f6e56; }
+  .stat-icon.amber { background: #faeeda; color: #854f0b; }
+  .stat-label {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── Main content ───────────────────────────── */
+  .main-content {
+    max-width: 960px;
+    margin: 2rem auto 3rem;
+    padding: 0 1.25rem;
+  }
+
+  /* ── Tabs ───────────────────────────────────── */
+  .da-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface-3);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 1.75rem;
+    width: fit-content;
+  }
+  .da-tab-btn {
+    padding: 9px 20px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .da-tab-btn .count-pill {
+    background: rgba(0,0,0,0.1);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 100px;
+    transition: all 0.18s;
+  }
+  .da-tab-btn.active {
+    background: var(--surface);
+    color: var(--brand-accent);
+    box-shadow: var(--shadow-sm);
+  }
+  .da-tab-btn.active .count-pill {
+    background: var(--brand-light);
+    color: var(--brand-accent);
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.show { display: block; }
+
+  /* ── Order cards ────────────────────────────── */
+  .orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+  }
+
+  .order-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .order-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+  }
+
+  .order-card-head {
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .order-card-head.assigned { background: var(--brand); }
+  .order-card-head.completed { background: var(--success); }
+
+  .order-id {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .order-status-badge {
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.9);
+    font-size: 11.5px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .order-card-body { padding: 1.25rem; }
+
+  .section-label {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+  .info-row {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    font-size: 13.5px;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+  }
+  .info-row .label {
+    color: var(--text-muted);
+    font-size: 12.5px;
+    min-width: 52px;
+  }
+  .info-divider {
+    border: none;
+    border-top: 0.5px solid var(--border);
+    margin: 1rem 0;
+  }
+
+  /* Address block */
+  .address-block {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-primary);
+    border-left: 3px solid var(--brand-accent);
+    line-height: 1.5;
+  }
+  .address-type-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand-accent);
+    background: var(--brand-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* Items mini-table */
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .items-table thead th {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 5px 0;
+    border-bottom: 0.5px solid var(--border);
+    text-align: left;
+  }
+  .items-table tbody td {
+    padding: 7px 0;
+    border-bottom: 0.5px solid var(--border);
+    color: var(--text-primary);
+  }
+  .items-table tbody tr:last-child td { border-bottom: none; }
+  .items-table .qty-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--surface-3);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--text-primary);
+  }
+
+  /* amount + delivery chips */
+  .meta-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 500;
+    border: 0.5px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-primary);
+  }
+  .meta-chip i { color: var(--text-muted); font-size: 14px; }
+
+  /* ── Card footer / actions ──────────────────── */
+  .order-card-footer {
+    padding: 1rem 1.25rem;
+    border-top: 0.5px solid var(--border);
+    background: var(--surface-2);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-accept {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+    border: none;
+    font-family: var(--font-body);
+  }
+  .btn-accept.primary {
+    background: var(--brand-accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(26,115,232,0.3);
+  }
+  .btn-accept.primary:hover {
+    background: #1565c0;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(26,115,232,0.4);
+  }
+  .btn-accept.success {
+    background: var(--success);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(15,110,86,0.3);
+  }
+  .btn-accept.success:hover {
+    background: #085041;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(15,110,86,0.4);
+  }
+
+  /* ── Completed card (slim) ──────────────────── */
+  .completed-card .order-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+  .completed-field { display: flex; flex-direction: column; gap: 2px; }
+  .completed-field .cf-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); font-weight: 600; }
+  .completed-field .cf-val   { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+
+  /* ── Empty state ────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+  }
+  .empty-state-icon {
+    width: 64px; height: 64px;
+    border-radius: 20px;
+    background: var(--surface-3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 1.25rem;
+    color: var(--text-muted);
+  }
+  .empty-state h5 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--text-primary);
+  }
+  .empty-state p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    margin: 0;
+  }
+</style>
+
+<!-- ════════════════════════════════════════════
+     HEADER BANNER
+════════════════════════════════════════════ -->
+<div class="da-header">
+  <div class="da-header-inner">
+    <div>
+      <p class="da-greeting"><i class="bi bi-truck me-1"></i> Delivery Dashboard</p>
+      <h1 class="da-name">{{ delivery_agent.user.get_full_name }}</h1>
+      <div class="da-badges">
+        <span class="da-badge
+          {% if delivery_agent.status == 'available' %}badge-status-available
+          {% elif delivery_agent.status == 'busy' %}badge-status-busy
+          {% else %}badge-status-offline{% endif %}">
+          <i class="bi bi-circle-fill" style="font-size:7px"></i>
+          {{ delivery_agent.get_status_display }}
+        </span>
+        <span class="da-badge da-badge-rating">
+          <i class="bi bi-star-fill" style="font-size:10px; color:#fac775;"></i>
+          {{ delivery_agent.rating|floatformat:1 }} / 5.0
+        </span>
+      </div>
     </div>
-
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Current Orders</h6>
-                    <h3 class="mb-0">{{ delivery_agent.current_orders }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Total Deliveries</h6>
-                    <h3 class="mb-0">{{ delivery_agent.total_deliveries }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Vehicle</h6>
-                    <p class="mb-0">{{ delivery_agent.get_vehicle_type_display }}</p>
-                    <small class="text-muted">{{ delivery_agent.vehicle_number }}</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabs -->
-    <ul class="nav nav-tabs mb-4" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="assigned-tab" data-bs-toggle="tab" data-bs-target="#assigned" type="button" role="tab">
-                <i class="bi bi-hourglass-split"></i> Assigned Orders ({{ assigned_orders|length }})
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab">
-                <i class="bi bi-check-circle"></i> Completed Deliveries ({{ completed_orders|length }})
-            </button>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <!-- Assigned Orders Tab -->
-        <div class="tab-pane fade show active" id="assigned" role="tabpanel">
-            {% if assigned_orders %}
-                <div class="row">
-                    {% for order in assigned_orders %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-primary">
-                                <div class="card-header bg-primary text-white">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">Order #{{ order.id }}</h5>
-                                        <span class="badge bg-light text-dark">{{ order.get_status_display }}</span>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <h6>Customer Details</h6>
-                                    <p class="mb-1">
-                                        <strong>Name:</strong> {{ order.user.get_full_name }}
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Phone:</strong> {{ order.user.phone }}
-                                    </p>
-                                    <p class="mb-3">
-                                        <strong>Email:</strong> {{ order.user.email }}
-                                    </p>
-
-                                    <h6>Delivery Address</h6>
-                                    <p class="mb-3">
-                                        {{ order.address.address }}<br>
-                                        <small class="text-muted">{{ order.address.get_address_type_display }}</small>
-                                    </p>
-
-                                    <h6>Order Summary</h6>
-                                    <p class="mb-1">
-                                        <strong>Items:</strong> {{ order.items.count }}
-                                    </p>
-                                    <p class="mb-1">
-                                        <strong>Amount:</strong> ₹{{ order.final_amount }}
-                                    </p>
-                                    <p class="mb-3">
-                                        <strong>Est. Delivery:</strong> {{ order.estimated_delivery|date:"M d, Y H:i" }}
-                                    </p>
-
-                                    <h6>Items to Deliver</h6>
-                                    <div class="table-responsive mb-3">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product</th>
-                                                    <th>Qty</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for item in order.items.all %}
-                                                    <tr>
-                                                        <td>{{ item.product.name }}</td>
-                                                        <td>{{ item.quantity }}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-light">
-                                    {% if order.status == 'out_for_delivery' %}
-                                        <form method="post" action="{% url 'delivery_agent_accept_order' order.id %}" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-hand-thumbs-up"></i> Accept Order
-                                            </button>
-                                        </form>
-                                        <a href="{% url 'delivery_agent_deliver_order' order.id %}" class="btn btn-sm btn-success">
-                                            <i class="bi bi-check-lg"></i> Mark as Delivered
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    <p class="mb-0">No assigned orders at the moment. Check back soon!</p>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Completed Deliveries Tab -->
-        <div class="tab-pane fade" id="completed" role="tabpanel">
-            {% if completed_orders %}
-                <div class="row">
-                    {% for order in completed_orders %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-success">
-                                <div class="card-header bg-success text-white">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">Order #{{ order.id }}</h5>
-                                        <span class="badge bg-light text-dark">Delivered</span>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-2">
-                                        <strong>Customer:</strong> {{ order.user.get_full_name }}
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>Amount:</strong> ₹{{ order.final_amount }}
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>Items:</strong> {{ order.items.count }}
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Delivered:</strong> {{ order.actual_delivery|date:"M d, Y H:i" }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    <p class="mb-0">No completed deliveries yet. Keep up the great work!</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    <a href="{% url 'profile' %}" class="btn-profile">
+      <i class="bi bi-person-circle"></i> My Profile
+    </a>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ════════════════════════════════════════════
+     STAT CARDS
+════════════════════════════════════════════ -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="bi bi-bag-check"></i></div>
+    <div class="stat-label">Current Orders</div>
+    <div class="stat-value">{{ delivery_agent.current_orders }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green"><i class="bi bi-trophy"></i></div>
+    <div class="stat-label">Total Deliveries</div>
+    <div class="stat-value">{{ delivery_agent.total_deliveries }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon amber"><i class="bi bi-bicycle"></i></div>
+    <div class="stat-label">Vehicle</div>
+    <div class="stat-value" style="font-size:1.1rem; font-weight:700;">{{ delivery_agent.get_vehicle_type_display }}</div>
+    <div class="stat-sub">{{ delivery_agent.vehicle_number }}</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════ -->
+<div class="main-content">
+
+  <!-- Tabs -->
+  <div class="da-tabs" id="daTabs">
+    <button class="da-tab-btn active" data-tab="assigned">
+      <i class="bi bi-hourglass-split"></i>
+      Assigned
+      <span class="count-pill">{{ assigned_orders|length }}</span>
+    </button>
+    <button class="da-tab-btn" data-tab="completed">
+      <i class="bi bi-check-circle"></i>
+      Completed
+      <span class="count-pill">{{ completed_orders|length }}</span>
+    </button>
+  </div>
+
+  <!-- ── Assigned Orders ── -->
+  <div class="tab-pane show" id="tab-assigned">
+    {% if assigned_orders %}
+      <div class="orders-grid">
+        {% for order in assigned_orders %}
+        <div class="order-card">
+
+          <div class="order-card-head assigned">
+            <span class="order-id">Order #{{ order.id }}</span>
+            <span class="order-status-badge">{{ order.get_status_display }}</span>
+          </div>
+
+          <div class="order-card-body">
+
+            <!-- Customer -->
+            <p class="section-label">Customer</p>
+            <div class="info-row"><span class="label">Name</span> {{ order.user.get_full_name }}</div>
+            <div class="info-row"><span class="label">Phone</span>
+              <a href="tel:{{ order.user.phone }}" style="color:var(--brand-accent); text-decoration:none;">{{ order.user.phone }}</a>
+            </div>
+            <div class="info-row"><span class="label">Email</span>
+              <span style="font-size:12.5px; color:var(--text-muted);">{{ order.user.email }}</span>
+            </div>
+
+            <hr class="info-divider">
+
+            <!-- Address -->
+            <p class="section-label">Delivery Address</p>
+            <div class="address-block">
+              {{ order.address.address }}
+              <br>
+              <span class="address-type-tag">{{ order.address.get_address_type_display }}</span>
+            </div>
+
+            <hr class="info-divider">
+
+            <!-- Order summary chips -->
+            <p class="section-label">Summary</p>
+            <div class="meta-chips">
+              <span class="meta-chip"><i class="bi bi-box-seam"></i> {{ order.items.count }} item{% if order.items.count != 1 %}s{% endif %}</span>
+              <span class="meta-chip"><i class="bi bi-currency-rupee"></i> {{ order.final_amount }}</span>
+              <span class="meta-chip"><i class="bi bi-clock"></i> {{ order.estimated_delivery|date:"d M, H:i" }}</span>
+            </div>
+
+            <hr class="info-divider">
+
+            <!-- Items table -->
+            <p class="section-label">Items to Deliver</p>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align:right;">Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                  <td>{{ item.product.name }}</td>
+                  <td style="text-align:right;"><span class="qty-badge">{{ item.quantity }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+          </div>
+
+        {% if order.status == 'out_for_delivery' %}
+<div class="order-card-footer">
+
+    {% if not order.delivery_accepted %}
+        <form method="post"
+              action="{% url 'delivery_agent_accept_order' order.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-accept primary">
+                <i class="bi bi-hand-thumbs-up"></i> Accept
+            </button>
+        </form>
+    {% else %}
+        <button class="btn-accept primary"
+                disabled
+                style="opacity:.6;cursor:not-allowed;">
+            <i class="bi bi-check-circle"></i>
+            Accepted
+        </button>
+    {% endif %}
+
+    <a href="{% url 'delivery_agent_deliver_order' order.id %}"
+       class="btn-accept success">
+        <i class="bi bi-check-lg"></i> Mark Delivered
+    </a>
+
+</div>
+{% endif %}
+
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+        <h5>No assigned orders</h5>
+        <p>You're all caught up! New orders will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ── Completed Orders ── -->
+  <div class="tab-pane" id="tab-completed">
+    {% if completed_orders %}
+      <div class="orders-grid">
+        {% for order in completed_orders %}
+        <div class="order-card completed-card">
+
+          <div class="order-card-head completed">
+            <span class="order-id">Order #{{ order.id }}</span>
+            <span class="order-status-badge"><i class="bi bi-check-circle-fill me-1" style="font-size:11px;"></i>Delivered</span>
+          </div>
+
+          <div class="order-card-body">
+            <div class="completed-field">
+              <span class="cf-label">Customer</span>
+              <span class="cf-val">{{ order.user.get_full_name }}</span>
+            </div>
+            <div class="completed-field">
+              <span class="cf-label">Amount</span>
+              <span class="cf-val">₹{{ order.final_amount }}</span>
+            </div>
+            <div class="completed-field">
+              <span class="cf-label">Items</span>
+              <span class="cf-val">{{ order.items.count }}</span>
+            </div>
+            <div class="completed-field">
+              <span class="cf-label">Delivered At</span>
+              <span class="cf-val">{{ order.actual_delivery|date:"d M Y, H:i" }}</span>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-patch-check"></i></div>
+        <h5>No completed deliveries</h5>
+        <p>Your delivered orders will show up here.</p>
+      </div>
+    {% endif %}
+  </div>
+
+</div><!-- /main-content -->
+
+<script>
+  document.querySelectorAll('.da-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.da-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('show');
+    });
+  });
+</script>
+
 {% endblock %}

@@ -133,6 +133,23 @@ class DeliveryAgentRegistrationForm(UserRegistrationForm):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service Village (Optional)'})
     )
+    
+    vehicle_type = forms.ChoiceField(
+    choices=[
+        ('bike', 'Bike'),
+        ('auto', 'Auto'),
+        ('scooter', 'Scooter')
+    ],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    vehicle_number = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'KL 07 AB 1234'
+        })
+    )
 
     class Meta:
         model = User
@@ -195,15 +212,50 @@ class ShopForm(forms.ModelForm):
 
 class AddressForm(forms.ModelForm):
     """Address form."""
+
+    latitude = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'step': '0.000001'
+            }
+        )
+    )
+
+    longitude = forms.FloatField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'step': '0.000001'
+            }
+        )
+    )
+
     class Meta:
         model = Address
-        fields = ('address_type', 'address', 'latitude', 'longitude', 'is_primary')
+        fields = (
+            'address_type',
+            'address',
+            'latitude',
+            'longitude',
+            'is_primary'
+        )
+
         widgets = {
-            'address_type': forms.Select(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'latitude': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.000001'}),
-            'longitude': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.000001'}),
-            'is_primary': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'address_type': forms.Select(
+                attrs={'class': 'form-control'}
+            ),
+            'address': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 3
+                }
+            ),
+            'is_primary': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'}
+            ),
         }
 
 

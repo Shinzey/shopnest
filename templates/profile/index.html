@@ -66,50 +66,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-title">Recent Orders</h6>
-                    {% if recent_orders %}
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Shop</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for order in recent_orders %}
-                                        <tr>
-                                            <td>#{{ order.id }}</td>
-                                            <td>
-                                                {% with shops=order.shops.all %}
-                                                    {% if shops.exists %}
-                                                        {{ shops.first.name }}{% if shops.count > 1 %} +{{ shops.count|add:"-1" }}{% endif %}
-                                                    {% else %}
-                                                        Multiple Shops
-                                                    {% endif %}
-                                                {% endwith %}
-                                            </td>
-                                            <td>₹{{ order.final_amount }}</td>
-                                            <td><span class="badge bg-info">{{ order.get_status_display }}</span></td>
-                                            <td>{{ order.created_at|date:"M d, Y" }}</td>
-                                            <td><a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-link">View</a></td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <a href="{% url 'orders_list' %}" class="btn btn-sm btn-outline-primary">View All Orders</a>
-                    {% else %}
-                        <p class="text-muted">No orders yet. <a href="{% url 'shops_list' %}">Start shopping</a></p>
-                    {% endif %}
-                </div>
-            </div>
         </div>
     </div>
 </div>

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}Delivery Agent Profile - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="row">
+
+        <!-- Left Sidebar -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}"
+                             class="rounded-circle mb-3"
+                             style="width:120px;height:120px;object-fit:cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                             style="width:120px;height:120px;font-size:40px;">
+                            {{ user.first_name|first }}
+                        </div>
+                    {% endif %}
+
+                    <h4>{{ user.get_full_name }}</h4>
+
+                    <p class="text-muted mb-2">
+                        {{ user.email }}
+                    </p>
+
+                    <span class="badge bg-primary">
+                        Delivery Agent
+                    </span>
+
+                    <hr>
+
+                    {% if delivery_agent.is_active %}
+                        <span class="badge bg-success fs-6">
+                            Available
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger fs-6">
+                            Unavailable
+                        </span>
+                    {% endif %}
+
+                    <form method="post" class="mt-3">
+                        {% csrf_token %}
+
+                        {% if delivery_agent.is_active %}
+                            <button type="submit"
+                                    class="btn btn-danger w-100">
+                                Go Offline
+                            </button>
+                        {% else %}
+                            <button type="submit"
+                                    class="btn btn-success w-100">
+                                Go Online
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    <div class="d-grid mt-3">
+                        <a href="{% url 'edit_profile' %}"
+                           class="btn btn-primary">
+                            Edit Profile
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-8">
+
+            <!-- Personal Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Personal Information</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Name</strong>
+                            <p>{{ user.get_full_name }}</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Phone</strong>
+                            <p>{{ user.phone }}</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Email</strong>
+                            <p>{{ user.email }}</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Joined</strong>
+                            <p>{{ user.date_joined|date:"M d, Y" }}</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <strong>Pincode</strong>
+                            <p>{{ user.pincode }}</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <strong>City</strong>
+                            <p>{{ user.city }}</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <strong>Village</strong>
+                            <p>{{ user.village|default:"-" }}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Vehicle Information</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <strong>Vehicle Type</strong>
+                            <p class="mt-2">
+                                {{ delivery_agent.get_vehicle_type_display }}
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Vehicle Number</strong>
+                            <p class="mt-2">
+                                {{ delivery_agent.vehicle_number }}
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Statistics -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Delivery Statistics</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row text-center">
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3">
+                                <h3 class="text-primary">
+                                    {{ delivery_agent.current_orders }}
+                                </h3>
+                                <small>Current Orders</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3">
+                                <h3 class="text-success">
+                                    {{ delivery_agent.total_deliveries }}
+                                </h3>
+                                <small>Total Deliveries</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3">
+                                <h3 class="text-warning">
+                                    ⭐ {{ delivery_agent.rating }}
+                                </h3>
+                                <small>Rating</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

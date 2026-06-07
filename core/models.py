@@ -53,13 +53,32 @@ class Address(models.Model):
         ('office', 'Office'),
         ('other', 'Other'),
     ]
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
-    address_type = models.CharField(max_length=20, choices=ADDRESS_TYPES)
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='addresses'
+    )
+
+    address_type = models.CharField(
+        max_length=20,
+        choices=ADDRESS_TYPES
+    )
+
     address = models.TextField()
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+
+    latitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    longitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
     is_primary = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -180,7 +199,7 @@ class DeliveryAgent(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='offline')
     current_orders = models.IntegerField(default=0)
     total_deliveries = models.IntegerField(default=0)
-    rating = models.FloatField(default=5.0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.FloatField(default=0.0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -241,6 +260,7 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=50, default='cod')
     estimated_delivery = models.DateTimeField()
     actual_delivery = models.DateTimeField(null=True, blank=True)
+    delivery_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
