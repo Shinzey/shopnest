@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Lists - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>My Shopping Lists</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'create_shopping_list' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Create New List
+            </a>
+        </div>
+    </div>
+
+    {% if lists %}
+        <div class="row">
+            {% for list in lists %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title">{{ list.name }}</h5>
+                                <span class="badge bg-{% if list.status == 'submitted' %}warning{% elif list.status == 'accepted' %}success{% elif list.status == 'rejected' %}danger{% else %}secondary{% endif %}">
+                                    {{ list.get_status_display }}
+                                </span>
+                            </div>
+                            <p class="card-text text-muted">{{ list.description|truncatewords:20 }}</p>
+                            {% if list.shop %}
+                                <p class="card-text"><small><strong>Shop:</strong> {{ list.shop.name }}</small></p>
+                            {% endif %}
+                            {% if list.image %}
+                                <p class="card-text">
+                                    <small><a href="{{ list.image.url }}" target="_blank" class="text-decoration-none">View Uploaded Image</a></small>
+                                </p>
+                            {% endif %}
+                            <p class="card-text"><small class="text-muted">Created: {{ list.created_at|date:'M d, Y' }}</small></p>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <a href="{% url 'shopping_list_detail' list.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">You haven't created any shopping lists yet. <a href="{% url 'create_shopping_list' %}">Create one now</a></p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

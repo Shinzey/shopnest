@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle"></i>
+                        Add New Product to {{ shop.name }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Product Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category & Price -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category *</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.price.id_for_label }}" class="form-label">Price (₹) *</label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.price.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Product Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Upload a product image (JPG, PNG). Max size: 5MB
+                            </small>
+                        </div>
+
+                        <!-- Stock & SKU -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.stock.id_for_label }}" class="form-label">Stock Quantity *</label>
+                                {{ form.stock }}
+                                {% if form.stock.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.stock.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.sku.id_for_label }}" class="form-label">SKU (Stock Keeping Unit) *</label>
+                                {{ form.sku }}
+                                {% if form.sku.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.sku.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Unique identifier for this product
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Available Checkbox -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form.is_available }}
+                                <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
+                                    Mark this product as available for sale
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-lg"></i> Add Product
+                            </button>
+                            <a href="{% url 'shop_owner_products' %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-lightbulb"></i>
+                <strong>Tips for adding products:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Use a clear, descriptive product name</li>
+                    <li>Upload high-quality product images</li>
+                    <li>Set competitive prices</li>
+                    <li>Keep stock information accurate</li>
+                    <li>Use unique SKU codes for each product</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 0.375rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

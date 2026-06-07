@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+
+{% block title %}ShopNest - Local Shopping Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4">Welcome to ShopNest</h1>
+                <p class="lead mb-4">Your one-stop shopping platform. Discover nearby shops, create shopping lists, and track your orders in real-time.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'shops_list' %}" class="btn btn-light btn-lg">
+                        <i class="bi bi-shop"></i> Explore Shops
+                    </a>
+                    <a href="{% url 'products_list' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-box"></i> Browse Products
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <i class="bi bi-bag-check" style="font-size: 150px; color: white; opacity: 0.8;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Animation CSS -->
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(5deg); }
+    }
+    
+    .feature-box {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        background: white;
+    }
+    
+    .feature-box:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .feature-box.box-primary {
+        border-color: #ff6b35;
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 107, 53, 0.02) 100%);
+    }
+    
+    .feature-box.box-secondary {
+        border-color: #004e89;
+        background: linear-gradient(135deg, rgba(0, 78, 137, 0.05) 0%, rgba(0, 78, 137, 0.02) 100%);
+    }
+    
+    .feature-box.box-success {
+        border-color: #06d6a0;
+        background: linear-gradient(135deg, rgba(6, 214, 160, 0.05) 0%, rgba(6, 214, 160, 0.02) 100%);
+    }
+    
+    .feature-box h5 {
+        color: #333;
+        font-weight: 700;
+    }
+    
+    .feature-icon {
+        font-size: 54px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    .box-primary .feature-icon { color: #ff6b35; }
+    .box-secondary .feature-icon { color: #004e89; }
+    .box-success .feature-icon { color: #06d6a0; }
+    
+    .feature-box:hover .feature-icon {
+        transform: scale(1.15) rotate(10deg);
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 30px 20px;
+    }
+    
+    .stat-number {
+        font-size: 36px;
+        font-weight: 700;
+        color: #ff6b35;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+<!-- Why ShopNest Section -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">Why Choose ShopNest?</h2>
+        <p class="lead text-muted">Everything you need for seamless local shopping and earning</p>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <!-- Feature 1: Local Shops -->
+        <div class="col-md-4">
+            <div class="card feature-box box-primary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <h5>Discover Local Shops</h5>
+                    <p class="text-muted mb-0">Find and connect with nearby shops in your area. Browse their offerings and support local businesses in your community.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 2: Easy Ordering -->
+        <div class="col-md-4">
+            <div class="card feature-box box-secondary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-cart-check"></i>
+                    </div>
+                    <h5>Simple & Fast Ordering</h5>
+                    <p class="text-muted mb-0">Add items to cart, select delivery address, and place orders in seconds. No complex procedures or long waiting times.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 3: Real-time Tracking -->
+        <div class="col-md-4">
+            <div class="card feature-box box-success h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <h5>Real-time Delivery</h5>
+                    <p class="text-muted mb-0">Track your order status in real-time and receive notifications at every step of the delivery journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <!-- Feature 4: Shopping Lists -->
+        <div class="col-md-4">
+            <div class="card feature-box box-success h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                    <h5>Smart Shopping Lists</h5>
+                    <p class="text-muted mb-0">Create and manage shopping lists with images. Organize your purchases and shop smarter every time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 5: Flexible Payment -->
+        <div class="col-md-4">
+            <div class="card feature-box box-primary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <h5>Cash on Delivery</h5>
+                    <p class="text-muted mb-0">Pay conveniently upon delivery. No upfront payments needed, complete control over your purchase.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 6: Multi-role Platform -->
+        <div class="col-md-4">
+            <div class="card feature-box box-secondary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5>For Everyone</h5>
+                    <p class="text-muted mb-0">Customers shop, sellers manage their business, and delivery partners earn. A complete ecosystem for all.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(0, 78, 137, 0.1) 100%); padding: 60px 0; margin: 40px 0;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">SHOPS</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">PRODUCTS</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">CUSTOMERS</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <div class="stat-number">1K+</div>
+                    <div class="stat-label">DELIVERIES DAILY</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">How ShopNest Works</h2>
+        <p class="lead text-muted">Three simple roles, one complete ecosystem</p>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Role 1: Customer -->
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%);">
+                <div class="card-body text-center">
+                    <div style="font-size: 60px; color: #ff6b35; margin-bottom: 20px;">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">For Customers</h5>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Browse nearby shops</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Discover products</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Fast checkout</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Real-time tracking</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Pay on delivery</li>
+                    </ul>
+                    <a href="{% url 'register_customer' %}" class="btn btn-sm fw-bold mt-3" style="background-color: #ff6b35; color: white;">Join as Customer</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Role 2: Shop Owner -->
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(0, 78, 137, 0.1) 0%, rgba(0, 78, 137, 0.05) 100%);">
+                <div class="card-body text-center">
+                    <div style="font-size: 60px; color: #004e89; margin-bottom: 20px;">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">For Shop Owners</h5>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Manage shop profile</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Add/Edit products</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Accept orders</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Track deliveries</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Grow your business</li>
+                    </ul>
+                    <a href="{% url 'register_shop_owner' %}" class="btn btn-sm fw-bold mt-3" style="background-color: #004e89; color: white;">Open Your Shop</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Role 3: Delivery Agent -->
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(6, 214, 160, 0.1) 0%, rgba(6, 214, 160, 0.05) 100%);">
+                <div class="card-body text-center">
+                    <div style="font-size: 60px; color: #06d6a0; margin-bottom: 20px;">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">For Delivery Agents</h5>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Flexible schedule</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Accept deliveries</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Collect cash</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Earn money</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: #06d6a0;"></i> Work independently</li>
+                    </ul>
+                    <a href="{% url 'register_delivery_agent' %}" class="btn btn-sm fw-bold mt-3" style="background-color: #06d6a0; color: white;">Start Delivering</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div style="background: linear-gradient(135deg, #ff6b35 0%, #004e89 100%); padding: 80px 0; margin-top: 60px; position: relative; overflow: hidden;">
+    <!-- Animated background shapes -->
+    <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
+    
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4" style="color: white; font-size: 2.5rem;">Ready to Join ShopNest?</h2>
+        <p class="lead mb-5" style="color: rgba(255, 255, 255, 0.95);">Choose your role and start your journey with us today.</p>
+        
+        <!-- Login Prominent -->
+        <div class="mb-4 p-4 rounded-4" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); max-width: 500px; margin: 0 auto;">
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 15px; font-size: 1.1rem;">
+                <strong>Already a member?</strong>
+            </p>
+            <a href="{% url 'login' %}" class="btn btn-light btn-lg fw-bold w-100" style="padding: 15px;">
+                <i class="bi bi-box-arrow-in-right"></i> LOGIN NOW
+            </a>
+        </div>
+        
+        <div class="d-flex gap-3 justify-content-center flex-wrap mt-5">
+            <a href="{% url 'register_customer' %}" class="btn btn-light btn-lg fw-bold" style="padding: 15px 40px; min-width: 200px;">
+                <i class="bi bi-person-check"></i> Shop as Customer
+            </a>
+            <a href="{% url 'register_shop_owner' %}" class="btn btn-outline-light btn-lg fw-bold" style="padding: 15px 40px; min-width: 200px;">
+                <i class="bi bi-shop"></i> Open Your Shop
+            </a>
+            <a href="{% url 'register_delivery_agent' %}" class="btn btn-outline-light btn-lg fw-bold" style="padding: 15px 40px; min-width: 200px;">
+                <i class="bi bi-truck"></i> Join as Delivery Agent
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

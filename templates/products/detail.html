@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Product Image & Basic Info -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 400px; width: 100%; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+                            <i class="bi bi-image" style="font-size: 80px; color: #ccc;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>{{ product.name }}</h2>
+                    
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-shop"></i>
+                        <a href="{% url 'shop_detail' product.shop.id %}">{{ product.shop.name }}</a>
+                    </p>
+
+                    <!-- Price & Availability -->
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <h3 class="mb-2">
+                            <strong class="text-primary">₹{{ product.price }}</strong>
+                        </h3>
+                        {% if product.is_available %}
+                            <p><span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> In Stock
+                            </span></p>
+                        {% else %}
+                            <p><span class="badge bg-danger">
+                                <i class="bi bi-x-circle"></i> Out of Stock
+                            </span></p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <h5>Description</h5>
+                    <p>{{ product.description }}</p>
+
+                    <!-- Category & Other Details -->
+                    <div class="mb-3">
+                        <p><strong>Category:</strong> {{ product.category }}</p>
+                    </div>
+
+                    <!-- Add to Cart Form -->
+                    {% if product.is_available and request.user.is_authenticated and request.user.is_customer %}
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-3">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Quantity</span>
+                                <input type="number" name="quantity" value="1" min="1" max="10" class="form-control" style="max-width: 80px;">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </form>
+                    {% elif not product.is_available %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> This product is currently out of stock.
+                        </div>
+                    {% endif %}
+
+                    <!-- Shop Info -->
+                    <div class="card mt-3">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Shop Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>{{ product.shop.name }}</strong></p>
+                                    <p class="text-muted small">{{ product.shop.address }}, {{ product.shop.city }}</p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <a href="{% url 'shop_detail' product.shop.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-shop"></i> View Shop
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Customer Reviews</h5>
+                        <span class="badge bg-light text-dark">{{ reviews.count }} Review{{ reviews.count|pluralize }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Average Rating -->
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <h4>
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-star-fill"></i> {{ avg_rating|floatformat:1 }}/5.0
+                            </span>
+                        </h4>
+                        <p class="text-muted">Based on {{ reviews.count }} review{{ reviews.count|pluralize }}</p>
+                    </div>
+
+                    <!-- Reviews List -->
+                    {% if reviews %}
+                        {% for review in reviews %}
+                            <div class="mb-3 pb-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-0">{{ review.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ review.created_at|timesince }} ago</small>
+                                    </div>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-star-fill"></i> {{ review.rating }}/5
+                                    </span>
+                                </div>
+                                <p class="mb-0">{{ review.content }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No reviews yet. Be the first to review this product!
+                        </div>
+                    {% endif %}
+
+                    <!-- Add Review Button -->
+                    {% if request.user.is_authenticated and request.user.is_customer %}
+                        <a href="{% url 'add_product_review' product.id %}" class="btn btn-primary">
+                            <i class="bi bi-pencil-square"></i> Write a Review
+                        </a>
+                    {% elif not request.user.is_authenticated %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-lock"></i>
+                            <a href="{% url 'login' %}">Login</a> to write a review
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+</style>
+{% endblock %}

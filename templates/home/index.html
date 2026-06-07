@@ -1,0 +1,333 @@
+     {% extends 'base.html' %}
+
+{% block title %}Home - ShopNest{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section" style="background: linear-gradient(135deg, #ff6b35 0%, #004e89 100%); padding: 80px 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4" style="color: white;">Welcome to ShopNest</h1>
+                <p class="lead mb-4" style="color: rgba(255, 255, 255, 0.9);">Your local shopping companion. Discover nearby shops, manage shopping lists, place orders, and get real-time delivery updates.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'shops_list' %}" class="btn btn-light btn-lg fw-bold">
+                        <i class="bi bi-shop"></i> Explore Shops
+                    </a>
+                    <a href="{% url 'products_list' %}" class="btn btn-outline-light btn-lg fw-bold">
+                        <i class="bi bi-box"></i> Browse Products
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <i class="bi bi-bag-check" style="font-size: 150px; color: white; opacity: 0.9; animation: float 3s ease-in-out infinite;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Animation CSS -->
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    .feature-box {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    .feature-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+    .feature-box.box-primary {
+        border-color: #ff6b35;
+        background-color: rgba(255, 107, 53, 0.05);
+    }
+    .feature-box.box-secondary {
+        border-color: #004e89;
+        background-color: rgba(0, 78, 137, 0.05);
+    }
+    .feature-box.box-success {
+        border-color: #06d6a0;
+        background-color: rgba(6, 214, 160, 0.05);
+    }
+    .feature-box h5 {
+        color: #333;
+        font-weight: 700;
+    }
+    .feature-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    .box-primary .feature-icon { color: #ff6b35; }
+    .box-secondary .feature-icon { color: #004e89; }
+    .box-success .feature-icon { color: #06d6a0; }
+</style>
+
+<!-- ShopNest Features Section -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-3">Why Choose ShopNest?</h2>
+        <p class="lead text-muted">Everything you need for seamless local shopping</p>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <!-- Feature 1: Local Shops -->
+        <div class="col-md-4">
+            <div class="card feature-box box-primary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <h5>Discover Local Shops</h5>
+                    <p class="text-muted">Find and connect with nearby shops in your area. Browse their offerings and support local businesses.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 2: Easy Ordering -->
+        <div class="col-md-4">
+            <div class="card feature-box box-secondary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-cart-check"></i>
+                    </div>
+                    <h5>Simple & Fast Ordering</h5>
+                    <p class="text-muted">Add items to cart, select delivery address, and place orders in seconds. No complex procedures.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 3: Real-time Tracking -->
+        <div class="col-md-4">
+            <div class="card feature-box box-success h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <h5>Real-time Delivery</h5>
+                    <p class="text-muted">Track your order status in real-time and receive notifications at every step of the delivery journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <!-- Feature 4: Shopping Lists -->
+        <div class="col-md-4">
+            <div class="card feature-box box-success h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+                    <h5>Smart Shopping Lists</h5>
+                    <p class="text-muted">Create and manage shopping lists with images. Organize your purchases and shop smarter.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 5: Flexible Payment -->
+        <div class="col-md-4">
+            <div class="card feature-box box-primary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <h5>Cash on Delivery</h5>
+                    <p class="text-muted">Pay conveniently upon delivery. No upfront payments needed, complete control over your purchase.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature 6: Multi-role Platform -->
+        <div class="col-md-4">
+            <div class="card feature-box box-secondary h-100 p-4">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5>For Everyone</h5>
+                    <p class="text-muted">Customers shop, sellers manage their business, and delivery partners earn. A complete ecosystem.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- How It Works Section -->
+    <div class="bg-light p-5 rounded-4 my-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">How ShopNest Works</h2>
+            <p class="text-muted">Three simple steps to get started</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #ff6b35; color: white; font-size: 28px;">
+                        <span class="fw-bold">1</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold">Browse & Select</h5>
+                <p class="text-muted">Explore nearby shops and their products. Filter by category or search for what you need.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #004e89; color: white; font-size: 28px;">
+                        <span class="fw-bold">2</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold">Place Order</h5>
+                <p class="text-muted">Add items to your cart, choose delivery address, and confirm your order instantly.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px; background-color: #06d6a0; color: white; font-size: 28px;">
+                        <span class="fw-bold">3</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold">Get Delivered</h5>
+                <p class="text-muted">Receive real-time updates and pay cash on delivery. Track your order from shop to doorstep.</p>
+            </div>
+        </div>
+    </div>
+
+<div class="container py-5">
+    <!-- Featured Shops -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Featured Shops</h2>
+            <a href="{% url 'shops_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        
+        {% if shops %}
+            <div class="row g-4">
+                {% for shop in shops %}
+                    <div class="col-md-4">
+                        <div class="card shop-card h-100">
+                            {% if shop.logo %}
+                                <img src="{{ shop.logo.url }}" class="shop-logo" alt="{{ shop.name }}">
+                            {% else %}
+                                <div class="shop-logo bg-light d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-shop" style="font-size: 50px; color: #ccc;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ shop.name }}</h5>
+                                <p class="card-text text-muted small">{{ shop.address|truncatewords:10 }}</p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge badge-type">{{ shop.get_shop_type_display }}</span>
+                                    <span class="rating-badge">★ {{ shop.rating }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> {{ shop.delivery_time }} mins
+                                </small>
+                                <div class="mt-3">
+                                    <a href="{% url 'shop_detail' shop.id %}" class="btn btn-sm btn-primary w-100">
+                                        View Shop
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No shops available yet.
+            </div>
+        {% endif %}
+    </section>
+    
+    <!-- Featured Products -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Featured Products</h2>
+            <a href="{% url 'products_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        
+        {% if featured_products %}
+            <div class="row g-4">
+                {% for product in featured_products %}
+                    <div class="col-md-3">
+                        <div class="card product-card h-100">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-box" style="font-size: 40px; color: #ccc;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body flex-grow-1">
+                                <h5 class="card-title">{{ product.name|truncatewords:3 }}</h5>
+                                <p class="text-muted small">{{ product.shop.name }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 text-primary">₹{{ product.price }}</span>
+                                    {% if product.stock > 0 %}
+                                        <span class="badge bg-success">In Stock</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Out of Stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-outline-primary w-100">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No products available yet.
+            </div>
+        {% endif %}
+    </section>
+    
+    <!-- Recent Orders -->
+    {% if recent_orders %}
+        <section>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Recent Orders</h2>
+                <a href="{% url 'orders_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                <td><strong>₹{{ order.final_amount }}</strong></td>
+                                <td>
+                                    <span class="order-status status-{{ order.status }}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+</div>
+{% endblock %}

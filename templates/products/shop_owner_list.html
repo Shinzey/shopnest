@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Products - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-box"></i>
+                Manage Products - {{ shop.name }}
+            </h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'add_product' %}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle"></i> Add New Product
+            </a>
+        </div>
+    </div>
+
+    {% if products %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                {% else %}
+                                    <div style="width: 50px; height: 50px; background-color: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-image" style="color: #ccc;"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ product.name }}</strong><br>
+                                <small class="text-muted">{{ product.description|truncatewords:5 }}</small>
+                            </td>
+                            <td>{{ product.category }}</td>
+                            <td><strong>₹{{ product.price }}</strong></td>
+                            <td>
+                                {% if product.stock > 0 %}
+                                    <span class="badge bg-success">{{ product.stock }} in stock</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Out of stock</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if product.is_available %}
+                                    <span class="badge bg-info">Available</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Unavailable</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-primary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'delete_product' product.id %}" class="btn btn-sm btn-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 48px;"></i>
+            <h4 class="mt-3">No Products Yet</h4>
+            <p class="text-muted">You haven't added any products to your shop.</p>
+            <a href="{% url 'add_product' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add Your First Product
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Go Back Button -->
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<style>
+    .table {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delivery - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-check-circle"></i>
+                        Confirm Delivery
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-0">
+                            <strong>Are you sure?</strong> Mark this order as delivered?
+                        </p>
+                    </div>
+
+                    <h6 class="mb-3">Order Details</h6>
+                    <p class="mb-2">
+                        <strong>Order ID:</strong> #{{ order.id }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Customer:</strong> {{ order.user.get_full_name }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Delivery Address:</strong> {{ order.address.address }}
+                    </p>
+                    <p class="mb-4">
+                        <strong>Order Amount:</strong> ₹{{ order.final_amount }}
+                    </p>
+
+                    <h6 class="mb-3">Items Delivered</h6>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-lg"></i> Mark as Delivered
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

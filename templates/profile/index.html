@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle mb-3 bg-primary d-flex align-items-center justify-content-center mx-auto" style="width: 100px; height: 100px;">
+                            <span class="text-white fw-bold fs-4">{{ user.get_full_name|first }}</span>
+                        </div>
+                    {% endif %}
+                    <h5 class="card-title">{{ user.get_full_name }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+                    <p class="card-text">
+                        <span class="badge bg-primary">{{ user.get_role_display }}</span>
+                    </p>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-primary w-100">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Personal Information</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Email:</strong> {{ user.email }}</li>
+                                <li><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</li>
+                                <li><strong>Pincode:</strong> {{ user.pincode|default:"Not provided" }}</li>
+                                <li><strong>City:</strong> {{ user.city|default:"Not provided" }}</li>
+                                <li><strong>Village:</strong> {{ user.village|default:"Not provided" }}</li>
+                                <li><strong>Member Since:</strong> {{ user.date_joined|date:"M d, Y" }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Addresses</h6>
+                            {% if addresses %}
+                                <div class="list-group list-group-sm">
+                                    {% for address in addresses %}
+                                        <div class="list-group-item">
+                                            <p class="mb-1"><strong>{{ address.get_address_type_display }}</strong></p>
+                                            <p class="mb-0 text-muted small">{{ address.address }}</p>
+                                            {% if address.is_primary %}<span class="badge bg-success mt-1">Primary</span>{% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No addresses added yet.</p>
+                            {% endif %}
+                            <a href="{% url 'add_address' %}" class="btn btn-sm btn-outline-primary mt-2">Add Address</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Recent Orders</h6>
+                    {% if recent_orders %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Shop</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                        <tr>
+                                            <td>#{{ order.id }}</td>
+                                            <td>
+                                                {% with shops=order.shops.all %}
+                                                    {% if shops.exists %}
+                                                        {{ shops.first.name }}{% if shops.count > 1 %} +{{ shops.count|add:"-1" }}{% endif %}
+                                                    {% else %}
+                                                        Multiple Shops
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </td>
+                                            <td>₹{{ order.final_amount }}</td>
+                                            <td><span class="badge bg-info">{{ order.get_status_display }}</span></td>
+                                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                            <td><a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-link">View</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="{% url 'orders_list' %}" class="btn btn-sm btn-outline-primary">View All Orders</a>
+                    {% else %}
+                        <p class="text-muted">No orders yet. <a href="{% url 'shops_list' %}">Start shopping</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

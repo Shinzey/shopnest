@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Checkout - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2 class="fw-bold mb-4">
+                <i class="bi bi-bag-check"></i> Checkout
+            </h2>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Delivery Address</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'create_order' %}" id="checkoutForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Select Delivery Address</label>
+                            <select name="address" class="form-select" required>
+                                <option value="">-- Choose Address --</option>
+                                {% for address in addresses %}
+                                    <option value="{{ address.id }}">
+                                        {{ address.get_address_type_display }} - {{ address.address }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        {% if not addresses %}
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> No addresses found. 
+                                <a href="{% url 'add_address' %}">Add address</a>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Payment Method</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-cash-coin"></i>
+                        <strong>Payment Method:</strong> Cash on Delivery (COD)
+                    </div>
+                    <p class="text-muted small">
+                        You will pay <strong>₹{{ total }}</strong> in cash when the delivery agent delivers your order.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>₹{{ item.product.price }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>₹{{ item.subtotal }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 100px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <strong>₹{{ total }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Delivery Fee:</span>
+                        <strong>₹0</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h5 mb-0">Total Payable:</span>
+                        <strong class="h5 mb-0 text-primary">₹{{ total }}</strong>
+                    </div>
+                    
+                    <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-credit-card"></i> Place Order
+                    </button>
+                </div>
+                
+                <div class="card-footer">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-shield-check"></i> Secure checkout. Your payment is safe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

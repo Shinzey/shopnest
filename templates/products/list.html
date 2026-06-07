@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Products</h2>
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ request.GET.search }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="text-muted">No Image</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted small">{{ product.description|truncatewords:15 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0">₹{{ product.price }}</span>
+                                <small class="text-muted">Stock: {{ product.stock }}</small>
+                            </div>
+                            {% if product.shop %}
+                                <small class="text-primary d-block mt-2">{{ product.shop.name }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">No products found. Try adjusting your search criteria.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

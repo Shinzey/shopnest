@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping List - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Shopping List Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            {% if shopping_list.image %}
+                                <img src="{{ shopping_list.image.url }}" alt="List Image" class="img-fluid rounded">
+                            {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                    <i class="bi bi-image" style="font-size: 40px; color: #ccc;"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h3>{{ shopping_list.shop.name }}</h3>
+                            <p class="text-muted">{{ shopping_list.shop.address }}, {{ shopping_list.shop.city }}</p>
+                            
+                            <div class="mb-3">
+                                <span class="badge bg-info">
+                                    {{ shopping_list.get_status_display }}
+                                </span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-calendar"></i> {{ shopping_list.created_at|date:"M d, Y" }}
+                                </span>
+                            </div>
+
+                            <p><strong>Items in List:</strong> {{ items.count }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">Status</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Current Status:</strong>
+                        <span class="badge bg-info">{{ shopping_list.get_status_display }}</span>
+                    </p>
+                    <div class="btn-group w-100" role="group">
+                        <a href="{% url 'add_shopping_list_item' shopping_list.id %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-lg"></i> Add Item
+                        </a>
+                        <a href="{% url 'delete_shopping_list' shopping_list.id %}" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items Section -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Items in List</h5>
+                </div>
+                <div class="card-body">
+                    {% if items %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Description</th>
+                                        <th>Quantity</th>
+                                        <th>Added Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td><strong>{{ item.name }}</strong></td>
+                                            <td>{{ item.description|default:"No description" }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ item.created_at|date:"M d, Y" }}</td>
+                                            <td>
+                                                <form method="post" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="delete_item" value="{{ item.id }}">
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this item?');">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            No items in this list yet.
+                            <a href="{% url 'add_shopping_list_item' shopping_list.id %}" class="alert-link">Add an item</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information -->
+    {% if shopping_list.status != 'draft' %}
+        <div class="alert alert-warning mt-4">
+            <i class="bi bi-info-circle"></i>
+            <strong>Status Update:</strong> 
+            {% if shopping_list.status == 'submitted' %}
+                Your shopping list has been submitted to the shop. You'll receive a notification once the shop reviews it.
+            {% elif shopping_list.status == 'accepted' %}
+                Your shopping list has been accepted! The shop is preparing your order.
+            {% elif shopping_list.status == 'rejected' %}
+                Unfortunately, the shop couldn't fulfill your shopping list. Please contact the shop for more details.
+            {% elif shopping_list.status == 'processing' %}
+                Your shopping list is being processed. We'll update you soon!
+            {% elif shopping_list.status == 'completed' %}
+                Your shopping list order has been completed! Thank you for your order.
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+</style>
+{% endblock %}

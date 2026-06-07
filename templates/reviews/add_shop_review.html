@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Review {{ shop.name }} - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square"></i>
+                        Write a Shop Review
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Shop Info -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-md-2">
+                                {% if shop.logo %}
+                                    <img src="{{ shop.logo.url }}" alt="{{ shop.name }}" class="img-fluid rounded" style="height: 80px; object-fit: cover; width: 100%;">
+                                {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 80px;">
+                                        <i class="bi bi-shop" style="font-size: 30px; color: #ccc;"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="mb-0">{{ shop.name }}</h5>
+                                <p class="text-muted mb-0">{{ shop.get_shop_type_display }}</p>
+                                <p class="text-muted mb-0 small">{{ shop.address }}, {{ shop.city }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Rating -->
+                        <div class="mb-3">
+                            <label for="{{ form.rating.id_for_label }}" class="form-label">Rating *</label>
+                            {{ form.rating }}
+                            {% if form.rating.errors %}
+                                <div class="invalid-feedback d-block">{{ form.rating.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Rate this shop from 1 (Poor) to 5 (Excellent).
+                            </small>
+                        </div>
+
+                        <!-- Review Content -->
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">Your Review *</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback d-block">{{ form.content.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Share your experience shopping at this store. Tell us about their service, quality, delivery, etc.
+                            </small>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg"></i> Submit Review
+                            </button>
+                            <a href="{% url 'shop_detail' shop.id %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Review Guidelines -->
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i>
+                <strong>Guidelines:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Be honest about your shopping experience</li>
+                    <li>Comment on service quality, product range, delivery speed, etc.</li>
+                    <li>Avoid inappropriate or offensive language</li>
+                    <li>Your review helps other customers find great shops</li>
+                    <li>Verified purchases get special recognition</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 0.375rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}

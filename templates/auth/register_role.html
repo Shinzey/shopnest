@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4">Choose Your Role</h3>
+                    <p class="text-center text-muted mb-4">Select the role that best describes you to create your ShopNest account.</p>
+                    
+                    <div class="row g-3">
+                        <!-- Customer -->
+                        <div class="col-md-4">
+                            <a href="{% url 'register_customer' %}" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm text-center role-card" style="transition: all 0.3s;">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="bi bi-person-fill" style="font-size: 3rem; color: #007bff;"></i>
+                                        </div>
+                                        <h5 class="card-title">Customer</h5>
+                                        <p class="card-text small text-muted">
+                                            Browse shops, order products, and create shopping lists
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-light border-0">
+                                        <small class="text-primary fw-bold">Register as Customer →</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Shop Owner -->
+                        <div class="col-md-4">
+                            <a href="{% url 'register_shop_owner' %}" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm text-center role-card" style="transition: all 0.3s;">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="bi bi-shop" style="font-size: 3rem; color: #28a745;"></i>
+                                        </div>
+                                        <h5 class="card-title">Shop Owner</h5>
+                                        <p class="card-text small text-muted">
+                                            Manage your shop, list products, and accept customer orders
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-light border-0">
+                                        <small class="text-success fw-bold">Register as Shop Owner →</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Delivery Agent -->
+                        <div class="col-md-4">
+                            <a href="{% url 'register_delivery_agent' %}" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm text-center role-card" style="transition: all 0.3s;">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <i class="bi bi-truck" style="font-size: 3rem; color: #fd7e14;"></i>
+                                        </div>
+                                        <h5 class="card-title">Delivery Agent</h5>
+                                        <p class="card-text small text-muted">
+                                            Deliver orders and earn money with ShopNest
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-light border-0">
+                                        <small class="text-warning fw-bold">Register as Agent →</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted">
+                            Already have an account? <a href="{% url 'login' %}">Login here</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
+{% endblock %}

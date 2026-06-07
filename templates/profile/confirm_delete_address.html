@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Address - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Delete Address
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong>Warning!</strong> This action cannot be undone.
+                    </div>
+
+                    <h5>Are you sure you want to delete this address?</h5>
+
+                    <!-- Address Details -->
+                    <div class="card mb-3 bg-light">
+                        <div class="card-body">
+                            <p class="mb-2">
+                                <strong>Address Type:</strong> {{ address.get_address_type_display }}<br>
+                                <strong>Address:</strong> {{ address.address }}<br>
+                                {% if address.is_primary %}
+                                    <strong>Status:</strong> <span class="badge bg-success">Primary Address</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Delete Confirmation Form -->
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg w-100 mb-2">
+                            <i class="bi bi-trash"></i> Yes, Delete This Address
+                        </button>
+                        <a href="{% url 'profile' %}" class="btn btn-secondary btn-lg w-100">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> If this is your primary address, please select another address as primary before deleting.
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+</style>
+{% endblock %}

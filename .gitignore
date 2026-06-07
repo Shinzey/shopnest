@@ -1,0 +1,34 @@
+core/__pycache__/__init__.cpython-314.pyc
+core/__pycache__/forms.cpython-314.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django media and static collected directories
+media/
+staticfiles/
+
+# Logs
+lines.log
+*.log
+pip-log.txt
+
+# OS & IDE specifics (Optional but recommended)
+.DS_Store
+.vscode/
+.idea/
+.env.example

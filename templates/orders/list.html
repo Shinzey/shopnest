@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Orders - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold">
+                <i class="bi bi-bag"></i> My Orders
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="input-group">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    {% for value, label in statuses %}
+                        <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td><strong>#{{ order.id }}</strong></td>
+                            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                            <td>{{ order.items.count }} items</td>
+                            <td><strong>₹{{ order.final_amount }}</strong></td>
+                            <td>
+                                <span class="badge bg-info">
+                                    <i class="bi bi-cash-coin"></i> COD
+                                </span>
+                            </td>
+                            <td>
+                                <span class="order-status status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                {% if order.status in 'pending,confirmed' %}
+                                    <a href="{% url 'cancel_order' order.id %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x"></i> Cancel
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> You haven't placed any orders yet.
+            <br><br>
+            <a href="{% url 'shops_list' %}" class="btn btn-primary">
+                <i class="bi bi-shop"></i> Start Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

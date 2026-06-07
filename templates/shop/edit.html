@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Shop - ShopNest{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-shop"></i>
+                        Edit Shop Details
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Shop Logo -->
+                        <div class="row mb-4">
+                            <div class="col-md-3 text-center">
+                                {% if shop.logo %}
+                                    <div class="mb-3">
+                                        <img src="{{ shop.logo.url }}" alt="{{ shop.name }}" class="img-fluid rounded" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                    </div>
+                                {% else %}
+                                    <div class="mb-3 bg-light rounded p-5" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-image" style="font-size: 50px; color: #ccc;"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <div class="mb-3">
+                                    <label for="{{ form.logo.id_for_label }}" class="form-label">Shop Logo</label>
+                                    {{ form.logo }}
+                                    <small class="form-text text-muted d-block mt-2">
+                                        Upload a logo image (JPG, PNG). Max size: 5MB
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basic Information -->
+                        <h6 class="mb-3 border-bottom pb-2">
+                            <i class="bi bi-info-circle"></i> Basic Information
+                        </h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Shop Name</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.shop_type.id_for_label }}" class="form-label">Shop Type</label>
+                                {{ form.shop_type }}
+                                {% if form.shop_type.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.shop_type.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Location Information -->
+                        <h6 class="mb-3 border-bottom pb-2">
+                            <i class="bi bi-geo-alt"></i> Location Information
+                        </h6>
+
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback d-block">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.city.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.village.id_for_label }}" class="form-label">Village</label>
+                                {{ form.village }}
+                                {% if form.village.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.village.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ form.pincode.id_for_label }}" class="form-label">Pincode</label>
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.pincode.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Operating Hours -->
+                        <h6 class="mb-3 border-bottom pb-2">
+                            <i class="bi bi-clock"></i> Operating Hours
+                        </h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.opening_time.id_for_label }}" class="form-label">Opening Time</label>
+                                {{ form.opening_time }}
+                                {% if form.opening_time.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.opening_time.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.closing_time.id_for_label }}" class="form-label">Closing Time</label>
+                                {{ form.closing_time }}
+                                {% if form.closing_time.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.closing_time.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Order Settings -->
+                        <h6 class="mb-3 border-bottom pb-2">
+                            <i class="bi bi-gear"></i> Order Settings
+                        </h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.min_order.id_for_label }}" class="form-label">Minimum Order Amount (₹)</label>
+                                {{ form.min_order }}
+                                {% if form.min_order.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.min_order.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.delivery_time.id_for_label }}" class="form-label">Delivery Time (minutes)</label>
+                                {{ form.delivery_time }}
+                                {% if form.delivery_time.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.delivery_time.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg"></i> Save Changes
+                            </button>
+                            <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i>
+                <strong>Tip:</strong> All changes are saved immediately. Make sure all information is accurate before saving.
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 0.375rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
