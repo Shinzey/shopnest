@@ -340,3 +340,14 @@ https://outpour-unnamable-oink.ngrok-free.dev
 
 shinan added git
 safal bk
+
+	delivery4@gmail.com	helium@helium
+	delivery3@gmail.com
+	customer2@gmail.com
+	shop2@gmail.com	
+	delivery2@gmail.com	
+	admin					123
+	delivery1@gmail.com	
+	shop1@gmail.com
+	customer1@gmail.com
+
