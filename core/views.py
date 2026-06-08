@@ -157,7 +157,6 @@ def home(request):
             active_orders = Order.objects.filter(shops=shop, status__in=['pending', 'confirmed']).order_by('-created_at')
             completed_orders = Order.objects.filter(shops=shop, status__in=['delivered', 'completed']).order_by('-created_at')
             products = shop.products.all()
-            
             context = {
                 'shop': shop,
                 'active_orders': active_orders[:10],
@@ -1008,7 +1007,7 @@ def delivery_agent_deliver_order(request, order_id):
     
     if order.status == 'out_for_delivery':
         if request.method == 'POST':
-            order.status = 'delivered'
+            order.status = 'delivery_confirmation_pending'
             order.actual_delivery = timezone.now()
             order.save()
             
@@ -1018,14 +1017,21 @@ def delivery_agent_deliver_order(request, order_id):
             delivery_agent.total_deliveries += 1
             delivery_agent.save()
             
-            # Create notification for customer
+            # # Create notification for customer
+            # Notification.objects.create(
+            #     user=order.user,
+            #     notification_type='order_update',
+            #     title='Order Delivered',
+            #     message=f'Your order #{order.id} has been delivered!',
+            #     related_order=order,
+            # )
             Notification.objects.create(
-                user=order.user,
-                notification_type='order_update',
-                title='Order Delivered',
-                message=f'Your order #{order.id} has been delivered!',
-                related_order=order,
-            )
+            user=order.user,
+            notification_type='order_update',
+            title='Confirm Delivery',
+            message=f'Please confirm that you received order #{order.id}.',
+            related_order=order,
+        )
             
             # Create notification for shop owner(s)
             for shop in order.shops.all():
@@ -1044,6 +1050,25 @@ def delivery_agent_deliver_order(request, order_id):
     
     return render(request, 'orders/confirm_delivery.html', {'order': order})
 
+@login_required
+def customer_confirm_delivery(request, order_id):
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        user=request.user
+    )
+
+    if request.method == 'POST':
+        order.status = 'delivered'
+        order.actual_delivery = timezone.now()
+        order.save()
+
+        messages.success(
+            request,
+            "Delivery confirmed successfully."
+        )
+
+    return redirect('home')
 # ==================== Product Management Views (Shop Owner) ====================
 
 @login_required

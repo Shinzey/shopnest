@@ -65,7 +65,8 @@ urlpatterns = [
     # Delivery Agent
     path('delivery/<int:order_id>/accept/', views.delivery_agent_accept_order, name='delivery_agent_accept_order'),
     path('delivery/<int:order_id>/deliver/', views.delivery_agent_deliver_order, name='delivery_agent_deliver_order'),
-    
+    path('order/<int:order_id>/confirm-delivery/',views.customer_confirm_delivery,name='customer_confirm_delivery'
+),
     # Product Management (Shop Owner)
     path('products/shop/', views.shop_owner_products, name='shop_owner_products'),
     path('products/add/', views.add_product, name='add_product'),

@@ -21,6 +21,35 @@
         </div>
     </div>
 
+    {% if order.status == 'delivery_confirmation_pending' %}
+<div class="delivery-confirm-card mb-4">
+    <div class="d-flex align-items-center">
+        <div class="confirm-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
+
+        <div class="flex-grow-1 ms-3">
+            <h5 class="mb-1 fw-bold">
+                Has your order arrived?
+            </h5>
+            <p class="mb-0 text-muted">
+                Your delivery agent marked this order as delivered.
+                Please confirm that you received it.
+            </p>
+        </div>
+    </div>
+
+    <form method="post"
+          action="{% url 'customer_confirm_delivery' order.id %}"
+          class="mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-confirm-delivery w-100">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            Confirm Order Received
+        </button>
+    </form>
+</div>
+{% endif %}
     <div class="row">
         <div class="col-md-8">
             <!-- Order Status -->
@@ -274,5 +303,57 @@
         height: 30px;
         background-color: #ddd;
     }
+.delivery-confirm-card{
+    background: linear-gradient(135deg,#f8fff9,#eefcf1);
+    border: 2px solid #22c55e;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 25px rgba(34,197,94,.12);
+    animation: pulseCard 2s infinite;
+}
+
+.confirm-icon{
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: #22c55e;
+    color: white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.btn-confirm-delivery{
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:12px 20px;
+    font-size:16px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn-confirm-delivery:hover{
+    background:#16a34a;
+    color:white;
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(34,197,94,.25);
+}
+
+@keyframes pulseCard{
+    0%{
+        box-shadow:0 0 0 0 rgba(34,197,94,.25);
+    }
+    70%{
+        box-shadow:0 0 0 12px rgba(34,197,94,0);
+    }
+    100%{
+        box-shadow:0 0 0 0 rgba(34,197,94,0);
+    }
+}
 </style>
+
+
 {% endblock %}

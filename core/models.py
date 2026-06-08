@@ -190,6 +190,7 @@ class DeliveryAgent(models.Model):
         ('available', 'Available'),
         ('busy', 'Busy'),
         ('offline', 'Offline'),
+        
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='delivery_agent', limit_choices_to={'role': 'delivery_agent'})
@@ -233,13 +234,14 @@ class ShoppingListItem(models.Model):
 class Order(models.Model):
     """Order model."""
     ORDER_STATUS = [
-        ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('preparing', 'Preparing'),
-        ('out_for_delivery', 'Out for Delivery'),
-        ('delivered', 'Delivered'),
-        ('cancelled', 'Cancelled'),
-    ]
+    ('pending', 'Pending'),
+    ('confirmed', 'Confirmed'),
+    ('preparing', 'Preparing'),
+    ('out_for_delivery', 'Out for Delivery'),
+    ('delivery_confirmation_pending', 'Waiting Customer Confirmation'),
+    ('delivered', 'Delivered'),
+    ('cancelled', 'Cancelled'),
+]
     
     PAYMENT_STATUS = [
         ('pending', 'Pending'),
@@ -255,7 +257,7 @@ class Order(models.Model):
     tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     final_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
+    status = models.CharField(max_length=40, choices=ORDER_STATUS, default='pending')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
     payment_method = models.CharField(max_length=50, default='cod')
     estimated_delivery = models.DateTimeField()

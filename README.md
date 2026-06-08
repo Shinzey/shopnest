@@ -324,17 +324,36 @@ pass:123
 
 
 shopowner
-email:shop1@gmail.com, shop2@gmail.com
+email:shop1@gmail.com
 pass:helium@helium
-
+pincode 123456
 
 customer
 mail:customer1@gmail.com
 pass:helium@helium
+pincode 123456
 
 delivery
 mail:delivery1@gmail.com
 pass:helium@helium
+pincode 123456
+
+
+
+shopowner
+email:shop2@gmail.com
+pass:helium@helium
+pincode 123789
+
+customer
+mail:customer2@gmail.com
+pass:helium@helium
+pincode 123789
+
+delivery
+mail:delivery2@gmail.com
+pass:helium@helium
+pincode 123789
 
 https://outpour-unnamable-oink.ngrok-free.dev
 
